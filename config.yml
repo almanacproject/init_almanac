@@ -1,0 +1,82 @@
+bob:
+  default_key_alg: "EC -pkeyopt ec_paramgen_curve:prime256v1 -pkeyopt ec_param_enc:named_curve"
+  services:
+    ## Access Manager services
+    - name: ampap
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=ampap"
+      confidants: virtualizationlayer
+      formats: JKS
+    - name: ampdp
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=ampdp"
+      confidants: virtualizationlayer
+      formats: JKS
+    ## DataFusionManager
+    - name: datafusionmanager
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=datafusionmanager"
+      confidants: mosquitto
+      formats: JKS
+    - name: datafusionmanager-api
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=datafusionmanager"
+      confidants: virtualizationlayer
+      formats: JKS
+    ## Broker
+    - name: mosquitto
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=mosquitto"
+      confidants: [datafusionmanager, scral, resourcecatalog, virtualizationlayer, receiver]
+      formats: PEM
+    ## Resource Catalog
+    - name: resourcecatalog
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=resourcecatalog"
+      confidants: [virtualizationlayer, mosquitto]
+      formats: PKCS12
+    ## scral
+    - name: scral
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=scral"
+      confidants: [virtualizationlayer, mosquitto]
+      formats: JKS
+    ## storage manager
+    - name: queryapi
+      # What does it do?
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=queryapi"
+      confidants: []
+      formats: PKCS12
+    - name: ngix-queryapi
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=ngix-queryapi"
+      confidants: [virtualizationlayer]
+      formats: PEM
+    - name: receiver
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=receiver"
+      confidants: [mosquitto]
+      formats: PKCS12
+    ## Virtualization Layer
+    - name: virtualizationlayer
+      subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=virtualizationlayer"
+      confidants: [mosquitto, ngix-queryapi, datafusionmanager-api, resourcecatalog, ampdp, ampap]
+      formats: PEM
+
+    ## Meta data framework
+    #- name: metadataframework
+    #  subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=metadataframework"
+    #  confidants: [mosquitto, virtualizationlayer, ampdp]
+    #  formats: PKCS12
+    ## Global Connect
+    #- name: 
+    #  subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=metadataframework"
+    #  confidants: [mosquitto, virtualizationlayer, ampdp]
+    #  formats: PKCS12
+
+psst:
+  passwords:
+    ## AM database passwords
+    - "database_root_pw"
+    - "database_pap_pw"
+    - "database_pdp_pw"
+  length: 20
+rework:
+  templates: []
+  # - ["/opt/input/services/am_pap/config.yml.t",             "/opt/output/services/am/pap/config.yml"]
+  # - ["/opt/input/services/am_pdp/config.yml.t",             "/opt/output/services/am/pdp/config.yml"]
+  # - ["/opt/input/services/am_db/AM.sql.t",                  "/opt/output/services/am/db/AM.sql"]
+  # - ["/opt/input/services/datafusionmanager/dpa/conf.cfg.t","/opt/output/services/datafusionmanager/dpa/conf.cfg"]
+  # - ["/opt/input/services/datafusionmanager/la/conf.cfg.t", "/opt/output/services/datafusionmanager/la/conf.cfg"]
+  # - ["/opt/input/services/mosquitto/mosquitto.conf.t",      "/opt/output/services/mosquitto/mosquitto.conf"]
