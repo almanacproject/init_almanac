@@ -1,0 +1,37 @@
+version: '2'
+
+
+services:
+ rabbit:
+   networks:
+      - almanacproject_backend
+ mongo:
+   networks:
+      - almanacproject_backend
+   volumes:
+      - /almanac/storagemanager/data:/data/db
+ receiver:
+   networks:
+      - almanacproject_backend
+   environment:
+     - SM_REC_MqttServerAddress=mosquitto
+     - SM_REC_MqttServerCertPath = $${bob.broker.formats.pem.keystore}
+     - SM_REC_MqttClientCertPath=$${bob.receiver.formats.pkcs12.keystore}
+     - SM_REC_MqttClientCertPassword=$${bob.receiver.password}
+ archiver:
+   networks:
+      - almanacproject_backend
+ ngix-queryapi:
+   networks:
+      - almanacproject_backend
+ queryapi:
+   networks:
+      - almanacproject_backend
+   environment:
+      - SM_QUERY_CERTIFICATEPATH=$${bob.queryapi.formats.pkcs12.keystore}
+      - SM_QUERY_CERTIFICATEPWD=$${bob.queryapi.password}
+
+
+networks:
+  almanacproject_backend:
+    external: true

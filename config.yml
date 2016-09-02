@@ -36,11 +36,12 @@ bob:
       formats: JKS
     ## storage manager
     - name: queryapi
-      # What does it do?
+      # What does it do? A: Queries MongoDB. The image name is almanacproject/smqueryopenapi
       subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=queryapi"
       confidants: []
       formats: PKCS12
     - name: ngix-queryapi
+      # Proxy for almanacproject/smqueryapi, fixes a Kestrel webserver bug.
       subject_str: "/C=DK/ST=Hovedstaden/L=Copenhagen/O=ALMANAC/OU=Lab/CN=ngix-queryapi"
       confidants: [virtualizationlayer]
       formats: PEM
